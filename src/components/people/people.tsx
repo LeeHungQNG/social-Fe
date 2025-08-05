@@ -6,12 +6,21 @@ import Grid from '@mui/material/Grid';
 import UserCard from './user-card';
 import { useRef } from 'react';
 import useInfiniteScroll from '@/libs/hooks/useInfiniteScroll';
+import { useSearchParams } from 'next/navigation';
+import useGetUserById from '@/libs/tanstack/user/useGetUserById';
 
 export default function People() {
-  const { data: users, hasNextPage, fetchNextPage } = useGetAllUser();
   const lastPageRef = useRef<HTMLDivElement | null>(null);
 
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId');
+
+  const { data: users, hasNextPage, fetchNextPage } = useGetAllUser();
+  const { data: searchedUser } = useGetUserById(userId || '');
+
   useInfiniteScroll({ targetRef: lastPageRef, hasNextPage, fetchNextPage });
+
+  const usersToShow = userId && searchedUser ? [searchedUser] : users;
 
   return (
     <>
@@ -27,10 +36,11 @@ export default function People() {
 
       {/* User Card */}
       <Grid container spacing={3}>
-        {users.map((user) => {
+        {usersToShow.map((user) => {
           return <UserCard key={user._id} user={user} />;
         })}
-        <div ref={lastPageRef}></div>
+        {/* <div ref={lastPageRef}></div> */}
+        {!userId && <div ref={lastPageRef}></div>}
       </Grid>
     </>
   );

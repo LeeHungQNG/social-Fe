@@ -106,6 +106,20 @@ const PostModel = ({ open, handleClose, initialValue }: ICreatePostModalProps) =
   };
 
   useEffect(() => {
+    if (!open) {
+      // Clean up preview images to prevent memory leak
+      imagePreview.forEach((url) => URL.revokeObjectURL(url));
+
+      setSelectedBgColor(backgroundColors[0]);
+      setShowBgColorSelector(false);
+      setImagePreview([]);
+      setImagesFile([]);
+      setContent('');
+      setMediaFiles([]);
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (initialValue) {
       setSelectedBgColor(initialValue.backgroundColor);
       setImagePreview(initialValue.mediaFiles.map((item) => item.url));

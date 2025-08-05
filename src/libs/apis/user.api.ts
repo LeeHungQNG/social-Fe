@@ -15,6 +15,9 @@ const userApi = {
   update(id: string, data: IUserUpdateInput) {
     return axiosClient.patch<unknown, IBackendResponse<IUser>>(`/users/${id}`, data);
   },
+  getOne(id: string) {
+    return axiosClient.get<unknown, IBackendResponse<IUser>>(`/users/${id}`);
+  },
 };
 
 export default userApi;

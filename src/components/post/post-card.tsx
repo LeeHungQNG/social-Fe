@@ -85,7 +85,9 @@ const PostCart = ({ post, onUpdate, onDelete }: IPostCardProps) => {
           subheader={formatTime(post.createdAt)}
         />
         <CardContent sx={{ background: post.backgroundColor }}>
-          <Typography variant="body1">{post.content}</Typography>
+          <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
+            {post.content}
+          </Typography>
         </CardContent>
         {post.mediaFiles.length > 0 && <ImagePreview imagePreview={post.mediaFiles.map((item) => item.url)} />}
         <CardActions disableSpacing sx={{ display: 'block' }}>
