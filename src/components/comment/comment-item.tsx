@@ -7,8 +7,9 @@ interface ICommentListProps {
   comment: IComment;
   selectedComment: string;
   setSelectedComment: (comment: string) => void;
+  users: IUser[];
 }
-const CommentItem = ({ comment, selectedComment, setSelectedComment }: ICommentListProps) => {
+const CommentItem = ({ comment, selectedComment, setSelectedComment, users }: ICommentListProps) => {
   const [isReplying, setIsReplying] = useState(false);
   const [parentCommentId, setParentCommentId] = useState<string>();
   const [replyToUserId, setReplyToUserId] = useState<string>();
@@ -30,12 +31,12 @@ const CommentItem = ({ comment, selectedComment, setSelectedComment }: ICommentL
     <Box key={comment._id} sx={{ mb: 2 }}>
       <ListItem alignItems="flex-start" sx={{ px: 0, py: 1 }}>
         <Box sx={{ width: '100%' }}>
-          <CommentItemField comment={comment} handleClickReply={handleClickReply} />
+          <CommentItemField comment={comment} handleClickReply={handleClickReply} users={users} />
           {/* Replies */}
           {comment.replies && comment.replies.length > 0 && (
             <Box sx={{ ml: 4, mt: 1 }}>
               {comment.replies.map((reply) => (
-                <CommentItemField key={reply._id} comment={reply} />
+                <CommentItemField key={reply._id} comment={reply} users={users} />
               ))}
             </Box>
           )}

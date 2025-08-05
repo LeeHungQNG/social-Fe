@@ -16,6 +16,7 @@ interface ICommentInputProps {
 
 const CommentInput = ({ placeholder, isReplyMode = false, onCancel, parentCommentId, replyToUserId, initialValue }: ICommentInputProps) => {
   const [content, setContent] = useState('');
+  const user = useAppSelector((state) => state.user.data);
 
   const post = useAppSelector((state) => state.post.data);
 
@@ -40,7 +41,7 @@ const CommentInput = ({ placeholder, isReplyMode = false, onCancel, parentCommen
 
   return (
     <Box sx={{ display: 'flex', ml: isReplyMode ? 4 : 0, mb: 3, gap: 1.5 }}>
-      <Avatar sx={{ width: 36, height: 36 }}>U</Avatar>
+      <Avatar src={user.avatarUrl || ''} sx={{ width: 36, height: 36 }}></Avatar>
       <Box sx={{ flexGrow: 1 }}>
         <TextField
           fullWidth

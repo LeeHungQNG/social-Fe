@@ -6,17 +6,22 @@ import { MouseEvent, useState } from 'react';
 import CommentInput from './comment-input';
 import { useAppSelector } from '@/libs/redux/hook';
 import useDeleteComment from '@/libs/tanstack/comment/useDeleteComment';
+import useGetAllUser from '@/libs/tanstack/user/useGetAllUser';
 
 interface ICommentItemFieldProps {
   comment: IComment;
   handleClickReply?: () => void;
+  users: IUser[];
 }
 
-const CommentItemField = ({ comment, handleClickReply }: ICommentItemFieldProps) => {
+const CommentItemField = ({ comment, handleClickReply, users }: ICommentItemFieldProps) => {
+  const user = useAppSelector((state) => state.user.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedComment, setSelectedComment] = useState<IComment>();
 
-  const user = useAppSelector((state) => state.user.data);
+  const { data: allUsers } = useGetAllUser();
+
+  const avatarUser = comment.userCommentId === user._id ? user : allUsers.find((u) => u._id === comment.userCommentId);
 
   // delete comment query
   const deleteCommentMutation = useDeleteComment();
@@ -45,7 +50,9 @@ const CommentItemField = ({ comment, handleClickReply }: ICommentItemFieldProps)
   return (
     <>
       <Box sx={{ display: 'flex', mb: handleClickReply ? 1 : 0 }}>
-        <Avatar sx={{ width: handleClickReply ? 32 : 36, height: handleClickReply ? 32 : 36, mr: 1.5 }}>{comment.userCommentName.charAt(0)}</Avatar>
+        <Avatar src={avatarUser?.avatarUrl || ''} sx={{ width: handleClickReply ? 32 : 36, height: handleClickReply ? 32 : 36, mr: 1.5, marginTop: '14px' }}>
+          {comment.userCommentName.charAt(0)}
+        </Avatar>
         <Box sx={{ flexGrow: 1 }}>
           {/* Comment content and input edit comment*/}
           <Paper

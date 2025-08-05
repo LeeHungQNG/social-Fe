@@ -14,6 +14,7 @@ import ImagePreview from './image-preview';
 import PostCommentAction from './post-comment-action';
 import ReactionPopper from './reaction-popper';
 import { useAppSelector } from '@/libs/redux/hook';
+import useGetAllUser from '@/libs/tanstack/user/useGetAllUser';
 
 interface IPostCardProps {
   post: TPost;
@@ -47,6 +48,9 @@ const PostCart = ({ post, onUpdate, onDelete }: IPostCardProps) => {
   // React Query
   const addReactionMutation = useAddReaction({ handleReactionLeave });
   const deleteReactionMutation = useDeleteReaction({ handleReactionLeave });
+  const { data: postUser } = useGetAllUser();
+
+  const avatarAuthor = post.authorId === user._id ? user : postUser?.find((author) => author._id === post.authorId);
 
   const openReaction = Boolean(anchorReactionEl);
   const id = open ? 'reaction-popper' : undefined;
@@ -67,7 +71,7 @@ const PostCart = ({ post, onUpdate, onDelete }: IPostCardProps) => {
     <>
       <Card key={post._id} sx={{ mb: 3 }}>
         <CardHeader
-          avatar={<Avatar />}
+          avatar={<Avatar src={avatarAuthor?.avatarUrl || ''} />}
           action={
             post.authorId === user._id && (
               <IconButton

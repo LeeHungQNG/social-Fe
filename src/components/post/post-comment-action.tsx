@@ -1,10 +1,10 @@
-import { Chat } from '@mui/icons-material';
-import { Button } from '@mui/material';
-import CommentModal from '../comment/comment-modal';
-import { useState } from 'react';
-import { TPost } from '@/libs/types/post.type';
 import { useAppDispatch } from '@/libs/redux/hook';
 import { initialPost, setPost } from '@/libs/redux/post/postSlice';
+import { TPost } from '@/libs/types/post.type';
+import { Chat } from '@mui/icons-material';
+import { Button } from '@mui/material';
+import { useState } from 'react';
+import CommentModal from '../comment/comment-modal';
 
 interface IPostCommentActionProps {
   post: TPost;
@@ -30,6 +30,7 @@ const PostCommentAction = ({ post }: IPostCommentActionProps) => {
       <Button onClick={handleClickOpen} startIcon={<Chat />}>
         Comments
       </Button>
+
       {open && <CommentModal open={open} handleClose={handleClose} />}
     </>
   );

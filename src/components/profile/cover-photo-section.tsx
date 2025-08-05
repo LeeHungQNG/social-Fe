@@ -3,8 +3,8 @@ import { updateUser } from '@/libs/redux/user/userSlice';
 import useUploadSingle from '@/libs/tanstack/upload/useUploadSingle';
 import useUploadCoverPhoto from '@/libs/tanstack/user/useUploadCoverPhoto';
 import { PhotoCamera } from '@mui/icons-material';
-import { Box, Button, Typography } from '@mui/material';
-import { ChangeEvent, useRef } from 'react';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { ChangeEvent, useRef, useState } from 'react';
 
 // Hydration error ssr -> src diffrent csr -> src
 import dynamic from 'next/dynamic';
@@ -13,6 +13,7 @@ const CustomCoverPhoto = dynamic(() => import('./custom-cover-photo'), {
 });
 
 const CoverPhotoSection = () => {
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const uploadSingle = useUploadSingle();
   const uploadCoverPhoto = useUploadCoverPhoto();
@@ -23,9 +24,11 @@ const CoverPhotoSection = () => {
     const file = e.target.files?.[0];
 
     if (file) {
+      setLoading(true);
       const res = await uploadSingle.mutateAsync(file);
       const coverRes = await uploadCoverPhoto.mutateAsync(res.data);
       dispatch(updateUser({ coverPhotoUrl: coverRes.data.coverPhotoUrl }));
+      setLoading(false);
     }
   };
   return (
@@ -33,7 +36,13 @@ const CoverPhotoSection = () => {
       <Typography variant="subtitle1" fontWeight="medium" sx={{ mb: 2 }}>
         Cover Photo
       </Typography>
-      <CustomCoverPhoto coverPhotoUrl={user.coverPhotoUrl || ''} />
+      {loading ? (
+        <Box sx={{ width: '100%', height: 300, bgcolor: '#f5f5f5', display: 'flex', alignItems: 'cener', justifyContent: 'center' }}>
+          <CircularProgress sx={{ position: 'absolute', top: '50%' }} />
+        </Box>
+      ) : (
+        <CustomCoverPhoto coverPhotoUrl={user.coverPhotoUrl || ''} />
+      )}
 
       <input type="file" accept="image/*" hidden ref={inputRef} onChange={handleCoverPhotoChange} />
       <Button
