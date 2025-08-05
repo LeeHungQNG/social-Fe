@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 const PeoplePage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <People />;
+      <People />
     </Suspense>
   );
 };
